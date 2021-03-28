@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RSS Feed App With E-mail</title>
+    {% load static %}
+    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static '/css/cover.css' %}" rel="stylesheet">
+    <style>
+      .my-iframe {
+        height: 80%;
+        width: 100%;
+        background-color: white;
+        border-radius: .25rem;
+      }
+      tr {
+      width: 100%;
+      display: inline-table;
+      height:60px;
+      table-layout: fixed;
+      }
+      table{
+         height:80%;
+         display: -moz-groupbox;
+      }
+      tbody{
+          overflow-y: scroll;
+          height: 80%;
+          width: 96%;
+          position: absolute;
+          background-color: white;
+          border-radius: .25rem;
+      }
+    </style>
+    <script>
+        function updateIframe(){
+            var myFrame = $("#myframe").contents().find('body');
+            var textareaValue = `{{ entries|safe }}`;
+            myFrame.html(textareaValue);
+        }
+    </script>
+</head>
+  <body class="text-center">
+
+    <div class="d-flex h-100 p-3 mx-auto flex-column" style="width: 100%;">
+      <header class="masthead mb-sm-5">
+        <button type="submit" class="btn btn-primary" form="rssemail">Send E-mail</button>
+        <button type="button" class="btn btn-light" onclick="updateIframe()">Preview</button>
+        <button type="submit" class="btn btn-success" form="rsslink">Save Link</button>
+      </header>
+
+      <div class="container h-100" style="max-width: 1550px;">
+        <div class="row h-100" >
+          <div class="col">
+            <form method="POST" action="" id="rssemail">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="email_field">Email address</label>
+                <input type="email" class="form-control" id="email_field" name="email_field" placeholder="name@example.com" required>
+              </div>
+            </form>
+            <iframe id="myframe" class="my-iframe">
+            </iframe>
+          </div>
+          <div class="col">
+            <form method="POST" action="" id="rsslink">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="link">RSS Feed Link</label>
+                <input type="text" class="form-control" id="link" name="link" placeholder="https://wydarzenia.interia.pl/feed" required>
+              </div>
+            </form>
+            <table class="table table-striped">
+              <tbody style="color: black;">
+                {% for rsslink in rsslinks %}
+                  <tr><td>{{ rsslink }}</td></tr>
+                {% endfor %}
+                </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <a href="/"><p>RSS Feed App With E-mail</p></a>
+        </div>
+      </footer>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="{% static '/js/popper.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
